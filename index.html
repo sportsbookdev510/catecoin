@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catecoin 🐱 $CATE — Catecoin on Robinhood Chain</title>
+  <meta name="description"
+    content="Catecoin ($CATE) — the meme coin lighting up Robinhood Chain. Vlad Tenev just adopted a new cat from @ATXsiameseRescu named Sushi! They just posted and confirmed, it's going viral! Grok confirms as well!" />
+  <meta property="og:title" content="Catecoin 🐱 $CATE" />
+  <meta property="og:description" content="Catecoin ($CATE) — the meme coin lighting up Robinhood Chain. Vlad Tenev just adopted a new cat from @ATXsiameseRescu named Sushi! They just posted and confirmed, it's going viral! Grok confirms as well!" />
+  <meta property="og:image" content="banner.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bangers&family=Luckiest+Guy&family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <link rel="icon" href="logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    /* ═══════════════════════════════════════════════════════════════
+       ⚡  PATCH ZONE — change these two lines only, everything updates
+       ═══════════════════════════════════════════════════════════════ */
+    const THUNDER = {
+      CA: "0xComingSoon",  // token contract address
+      PAIR: "0xPairSoon",  // LP pair address
+
+      // chain slugs (rarely need touching)
+      DS_CHAIN: "robinhood",      // dexscreener chain slug
+      UNI_CHAIN: "robinhood",     // uniswap ?chain= slug
+    };
+    /* ═══════════════════════════════════════════════════════════════ */
+
+    THUNDER.BUY = `https://app.uniswap.org/swap?chain=${THUNDER.UNI_CHAIN}&outputCurrency=${THUNDER.CA}`;
+    THUNDER.CHART = `https://dexscreener.com/${THUNDER.DS_CHAIN}/${THUNDER.PAIR}`;
+    THUNDER.EMBED = `https://dexscreener.com/${THUNDER.DS_CHAIN}/${THUNDER.PAIR}?embed=1&theme=dark&trades=0&info=0`;
+    THUNDER.POOL = `https://app.uniswap.org/explore/pools/${THUNDER.UNI_CHAIN}/${THUNDER.PAIR}`;
+
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bolt: "#FFE14D",
+            storm: "#0A1B4D",
+            deep: "#050B23",
+            zap: "#3FA9FF",
+            ink: "#080B14",
+          },
+          fontFamily: {
+            pow: ['"Luckiest Guy"', 'cursive'],
+            bang: ['Bangers', 'cursive'],
+            blk: ['"Archivo Black"', 'sans-serif'],
+            body: ['"Space Grotesk"', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root {
+      --halftone: radial-gradient(circle at center, rgba(0, 0, 0, .28) 1.4px, transparent 1.5px);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #050B23;
+      color: #fff;
+      overflow-x: hidden;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* ── fixed background image + storm veil ───────────────── */
+    .bg-fixed-art {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: url('background.png') center/cover no-repeat;
+      filter: saturate(1.15);
+    }
+
+    .bg-veil {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(63, 169, 255, .30), transparent 55%),
+        radial-gradient(ellipse at 85% 90%, rgba(140, 90, 255, .28), transparent 55%),
+        linear-gradient(180deg, rgba(5, 11, 35, .78) 0%, rgba(5, 11, 35, .88) 45%, rgba(5, 11, 35, .94) 100%);
+    }
+
+    .bg-dots {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: var(--halftone);
+      background-size: 7px 7px;
+      opacity: .55;
+      mix-blend-mode: overlay;
+    }
+
+    /* ── comic primitives ──────────────────────────────────── */
+    .panel {
+      border: 4px solid #050B23;
+      box-shadow: 10px 10px 0 #050B23, 10px 10px 0 6px rgba(255, 225, 77, .9);
+      background: rgba(255, 255, 255, .06);
+      backdrop-filter: blur(9px);
+    }
+
+    .panel-lite {
+      border: 4px solid #050B23;
+      box-shadow: 8px 8px 0 #050B23;
+      background: rgba(255, 255, 255, .07);
+      backdrop-filter: blur(8px);
+    }
+
+    .halftone-fill {
+      background-image: radial-gradient(circle at center, rgba(255, 225, 77, .5) 1.6px, transparent 1.7px);
+      background-size: 9px 9px;
+    }
+
+    /* outlined comic text */
+    .outline-ink {
+      -webkit-text-stroke: 3px #050B23;
+      paint-order: stroke fill;
+      text-shadow: 5px 6px 0 rgba(5, 11, 35, .95);
+    }
+
+    .outline-thin {
+      -webkit-text-stroke: 2px #050B23;
+      paint-order: stroke fill;
+      text-shadow: 3px 4px 0 rgba(5, 11, 35, .9);
+    }
+
+    /* ── 3D perspective stage ──────────────────────────────── */
+    .stage {
+      perspective: 1400px;
+      perspective-origin: 50% 40%;
+    }
+
+    .tilt-l {
+      transform: rotateY(9deg) rotateX(3deg) rotateZ(-1.2deg);
+      transform-style: preserve-3d;
+    }
+
+    .tilt-r {
+      transform: rotateY(-9deg) rotateX(3deg) rotateZ(1.2deg);
+      transform-style: preserve-3d;
+    }
+
+    .tilt-flat {
+      transform: rotateX(6deg);
+      transform-style: preserve-3d;
+    }
+
+    .pop {
+      transform: translateZ(60px);
+    }
+
+    /* ── burst / starburst badge ───────────────────────────── */
+    .burst {
+      clip-path: polygon(50% 0%, 61% 16%, 79% 8%, 80% 28%, 98% 28%, 88% 45%, 100% 58%, 82% 65%, 90% 84%, 70% 80%, 64% 99%, 50% 86%, 36% 99%, 30% 80%, 10% 84%, 18% 65%, 0% 58%, 12% 45%, 2% 28%, 20% 28%, 21% 8%, 39% 16%);
+    }
+
+    /* ── lightning marquee strip ───────────────────────────── */
+    .strip {
+      background: #FFE14D;
+      color: #050B23;
+      border-top: 4px solid #050B23;
+      border-bottom: 4px solid #050B23;
+    }
+
+    .marquee {
+      display: flex;
+      width: max-content;
+      animation: slide 26s linear infinite;
+    }
+
+    @keyframes slide {
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* ── flicker + float ───────────────────────────────────── */
+    @keyframes flick {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      47% {
+        opacity: 1
+      }
+
+      48% {
+        opacity: .35
+      }
+
+      52% {
+        opacity: 1
+      }
+
+      73% {
+        opacity: .55
+      }
+
+      76% {
+        opacity: 1
+      }
+    }
+
+    .flick {
+      animation: flick 4.5s infinite;
+    }
+
+    @keyframes bob {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-16px)
+      }
+    }
+
+    .bob {
+      animation: bob 5s ease-in-out infinite;
+    }
+
+    /* ── nav ───────────────────────────────────────────────── */
+    .navlink {
+      position: relative;
+    }
+
+    .navlink::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      height: 4px;
+      width: 0;
+      background: #FFE14D;
+      transition: width .22s ease;
+    }
+
+    .navlink:hover::after {
+      width: 100%;
+    }
+
+    /* ── buttons ───────────────────────────────────────────── */
+    .btn-comic {
+      border: 4px solid #050B23;
+      box-shadow: 6px 6px 0 #050B23;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+
+    .btn-comic:hover {
+      transform: translate(3px, 3px);
+      box-shadow: 3px 3px 0 #050B23;
+    }
+
+    .btn-comic:active {
+      transform: translate(6px, 6px);
+      box-shadow: 0 0 0 #050B23;
+    }
+
+    /* ── reveal on scroll ──────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(48px) scale(.97);
+      transition: opacity .7s cubic-bezier(.2, .8, .2, 1), transform .7s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── section divider (torn comic edge) ─────────────────── */
+    .zigzag {
+      height: 26px;
+      background: #FFE14D;
+      clip-path: polygon(0 0, 4% 100%, 8% 0, 12% 100%, 16% 0, 20% 100%, 24% 0, 28% 100%, 32% 0, 36% 100%, 40% 0, 44% 100%, 48% 0, 52% 100%, 56% 0, 60% 100%, 64% 0, 68% 100%, 72% 0, 76% 100%, 80% 0, 84% 100%, 88% 0, 92% 100%, 96% 0, 100% 100%, 100% 0);
+    }
+
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #050B23;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #FFE14D;
+      border: 3px solid #050B23;
+    }
+  </style>
+</head>
+
+<body class="font-body">
+
+  <div class="bg-fixed-art"></div>
+  <div class="bg-veil"></div>
+  <div class="bg-dots"></div>
+
+  <!-- ══════════════════ NAV ══════════════════ -->
+  <header class="fixed top-0 inset-x-0 z-50">
+    <nav class="w-full px-5 md:px-8 py-2.5 flex items-center justify-between panel-lite rounded-none border-x-0 border-t-0">
+      <a href="#hero" class="flex items-center gap-3 group">
+        <img src="logo.png" alt="Catecoin logo"
+          class="w-11 h-11 border-[3px] border-ink rounded-full object-cover group-hover:rotate-12 transition" />
+        <span class="font-pow text-xl md:text-2xl text-bolt outline-thin tracking-wide">Catecoin</span>
+      </a>
+
+      <ul class="hidden lg:flex items-center gap-8 font-blk text-[13px] uppercase tracking-widest">
+        <li><a href="#about" class="navlink hover:text-bolt transition">About</a></li>
+        <li><a href="#buy" class="navlink hover:text-bolt transition">How to Buy</a></li>
+        <li><a href="#chart" class="navlink hover:text-bolt transition">Chart</a></li>
+        <li><a href="#join" class="navlink hover:text-bolt transition">Join Us</a></li>
+      </ul>
+
+      <div class="flex items-center gap-2">
+        <a href="https://x.com/catecoin_robin" target="_blank" rel="noopener" aria-label="X"
+          class="w-10 h-10 grid place-items-center bg-white text-ink btn-comic hover:bg-bolt"><i
+            class="bi bi-twitter-x text-lg"></i></a>
+        <a data-buy href="#" target="_blank" rel="noopener"
+          class="hidden sm:inline-flex items-center gap-2 px-4 h-10 bg-bolt text-ink font-blk text-xs uppercase tracking-wider btn-comic">
+          <i class="bi bi-lightning-charge-fill"></i> Buy
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ══════════════════ HERO ══════════════════ -->
+  <section id="hero" class="relative min-h-screen flex items-center pt-28 pb-16 stage">
+    <div class="mx-auto max-w-7xl px-5 grid lg:grid-cols-[1.05fr_.95fr] gap-10 items-center w-full">
+
+      <!-- left: text panel -->
+      <div class="tilt-l reveal">
+        <div
+          class="inline-flex items-center gap-2 px-4 py-1.5 bg-bolt text-ink font-blk text-[11px] uppercase tracking-[.2em] border-[3px] border-ink mb-6">
+          <i class="bi bi-lightning-fill"></i> Live on Robinhood Chain
+        </div>
+
+        <h1 class="font-pow leading-[.86] text-bolt outline-ink text-[17vw] sm:text-[11vw] lg:text-[7.2rem]">
+          CATE<br /><span class="text-white">COIN</span>
+        </h1>
+
+
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a data-buy href="#" target="_blank" rel="noopener"
+            class="px-7 py-4 bg-bolt text-ink font-pow text-xl tracking-wide btn-comic inline-flex items-center gap-3">
+            <i class="bi bi-lightning-charge-fill text-2xl"></i> BUY $CATE
+          </a>
+          <a data-chart href="#" target="_blank" rel="noopener"
+            class="px-7 py-4 bg-white text-ink font-pow text-xl tracking-wide btn-comic inline-flex items-center gap-3">
+            <i class="bi bi-graph-up-arrow text-2xl"></i> CHART
+          </a>
+        </div>
+
+        <!-- contract pill -->
+        <div class="mt-8 panel-lite p-3 flex items-center gap-3 max-w-xl">
+          <span class="font-blk text-[10px] uppercase tracking-widest bg-bolt text-ink px-2 py-1 shrink-0">CA</span>
+          <code data-ca class="text-xs md:text-sm text-slate-200 truncate flex-1"></code>
+          <button data-copy
+            class="shrink-0 w-9 h-9 grid place-items-center bg-white text-ink border-[3px] border-ink hover:bg-bolt transition"
+            aria-label="Copy contract">
+            <i class="bi bi-clipboard"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- right: hero art -->
+      <div class="tilt-r reveal relative">
+        <div class="absolute -inset-6 halftone-fill opacity-40 blur-[1px]"></div>
+        <div class="relative panel p-2 bob">
+          <img src="hero.png" alt="Catecoin — $CATE" class="w-full h-auto" />
+        </div>
+        <!-- burst badge -->
+        <div
+          class="absolute -top-8 -left-8 w-28 h-28 md:w-36 md:h-36 bg-bolt burst grid place-items-center rotate-[-14deg] flick pop">
+          <span class="font-pow text-ink text-center leading-none text-lg md:text-2xl">$CATE!</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ MARQUEE STRIP ══════════════════ -->
+  <div class="strip py-2.5 overflow-hidden -rotate-1 my-2">
+    <div class="marquee font-pow text-2xl md:text-3xl">
+      <span class="flex shrink-0">
+        <span class="px-6">🐱 $CATE</span><span class="px-6">🍣 CATECOIN</span>
+        <span class="px-6">⚡ ROBINHOOD CHAIN</span><span class="px-6">🐱 CATE GOING VIRAL</span>
+        <span class="px-6">🚀 TO THE MOON</span><span class="px-6">🐱 $CATE</span>
+        <span class="px-6">🍣 CATECOIN</span><span class="px-6">⚡ ROBINHOOD CHAIN</span>
+        <span class="px-6">🐱 CATE GOING VIRAL</span><span class="px-6">🚀 TO THE MOON</span>
+      </span>
+      <span class="flex shrink-0" aria-hidden="true">
+        <span class="px-6">🐱 $CATE</span><span class="px-6">🍣 CATECOIN</span>
+        <span class="px-6">⚡ ROBINHOOD CHAIN</span><span class="px-6">🐱 CATE GOING VIRAL</span>
+        <span class="px-6">🚀 TO THE MOON</span><span class="px-6">🐱 $CATE</span>
+        <span class="px-6">🍣 CATECOIN</span><span class="px-6">⚡ ROBINHOOD CHAIN</span>
+        <span class="px-6">🐱 CATE GOING VIRAL</span><span class="px-6">🚀 TO THE MOON</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ══════════════════ ABOUT ══════════════════ -->
+  <section id="about" class="relative py-24 md:py-32 stage">
+    <div class="mx-auto max-w-7xl px-5">
+
+      <div class="text-center mb-14 reveal">
+        <h2 class="font-pow text-bolt outline-ink text-6xl md:text-8xl leading-none">Tokenomics</h2>
+      </div>
+
+      <!-- comic strip: 3 uneven panels in 3D -->
+      <div class="grid lg:grid-cols-12 gap-7 items-stretch">
+
+        <!-- panel 1: main.png art -->
+
+
+        <!-- panel 2: story -->
+        <div class="lg:col-span-12 reveal tilt-r flex flex-col gap-6">
+
+
+          <div class="grid sm:grid-cols-4 gap-5">
+            <div class="panel-lite p-5 text-center">
+              <i class="bi bi-lightning-charge-fill text-3xl text-bolt"></i>
+              <div class="font-pow text-2xl mt-2">1 Billion</div>
+              <div class="font-blk text-[10px] uppercase tracking-widest text-white/60 mt-1">Total Supply</div>
+            </div>
+            <div class="panel-lite p-5 text-center">
+              <i class="bi bi-lightning-charge-fill text-3xl text-bolt"></i>
+              <div class="font-pow text-2xl mt-2">100%</div>
+              <div class="font-blk text-[10px] uppercase tracking-widest text-white/60 mt-1">LP Burned</div>
+            </div>
+            <div class="panel-lite p-5 text-center">
+              <i class="bi bi-shield-lock-fill text-3xl text-bolt"></i>
+              <div class="font-pow text-2xl mt-2">0 / 0</div>
+              <div class="font-blk text-[10px] uppercase tracking-widest text-white/60 mt-1">Tax</div>
+            </div>
+            <div class="panel-lite p-5 text-center">
+              <i class="bi bi-key-fill text-3xl text-bolt"></i>
+              <div class="font-pow text-2xl mt-2">GONE</div>
+              <div class="font-blk text-[10px] uppercase tracking-widest text-white/60 mt-1">Ownership</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- bottom wide panel with logo -->
+
+    </div>
+  </section>
+
+  <div class="zigzag"></div>
+
+  <!-- ══════════════════ HOW TO BUY ══════════════════ -->
+  <section id="buy" class="relative py-24 md:py-32 stage">
+    <div class="mx-auto max-w-7xl px-5">
+
+      <div class="text-center mb-16 reveal">
+        <h2 class="font-pow text-white outline-ink text-6xl md:text-8xl leading-none">HOW TO <span
+            class="text-bolt">BUY</span></h2>
+        <p class="font-blk uppercase tracking-[.35em] text-xs text-white/70 mt-4">Four strikes and you're in</p>
+      </div>
+
+      <!-- staircase 3D panels -->
+      <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-7">
+
+        <div class="reveal" style="transition-delay:0ms">
+          <div class="panel p-7 h-full tilt-l">
+            <div class="w-14 h-14 bg-bolt text-ink burst grid place-items-center font-pow text-2xl mb-5">1</div>
+            <h3 class="font-pow text-2xl text-bolt mb-2">GET A WALLET</h3>
+            <p class="text-slate-200/80 leading-relaxed text-[15px]">
+              Install MetaMask or Rabby, then add the <b class="text-white">Robinhood Chain</b> network.
+              Fund it with the chain's gas token.
+            </p>
+          </div>
+        </div>
+
+        <div class="reveal" style="transition-delay:90ms">
+          <div class="panel p-7 h-full tilt-r">
+            <div class="w-14 h-14 bg-white text-ink burst grid place-items-center font-pow text-2xl mb-5">2</div>
+            <h3 class="font-pow text-2xl text-bolt mb-2">OPEN UNISWAP</h3>
+            <p class="text-slate-200/80 leading-relaxed text-[15px]">
+              Head to Uniswap on Robinhood Chain and connect your wallet. Make sure the network
+              selector reads Robinhood Chain.
+            </p>
+            <a data-buy href="#" target="_blank" rel="noopener"
+              class="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-[#FF007A] text-white font-blk text-[11px] uppercase tracking-widest btn-comic">
+              <i class="bi bi-arrow-left-right"></i> Uniswap
+            </a>
+          </div>
+        </div>
+
+        <div class="reveal" style="transition-delay:180ms">
+          <div class="panel p-7 h-full tilt-l">
+            <div class="w-14 h-14 bg-bolt text-ink burst grid place-items-center font-pow text-2xl mb-5">3</div>
+            <h3 class="font-pow text-2xl text-bolt mb-2">PASTE THE CA</h3>
+            <p class="text-slate-200/80 leading-relaxed text-[15px]">
+              Drop the Catecoin ($CATE) contract into the token field. Always verify it against this site
+              or our official socials.
+            </p>
+            <button data-copy
+              class="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-white text-ink font-blk text-[11px] uppercase tracking-widest btn-comic">
+              <i class="bi bi-clipboard"></i> Copy CA
+            </button>
+          </div>
+        </div>
+
+        <div class="reveal" style="transition-delay:270ms">
+          <div class="panel p-7 h-full tilt-r">
+            <div class="w-14 h-14 bg-white text-ink burst grid place-items-center font-pow text-2xl mb-5">4</div>
+            <h3 class="font-pow text-2xl text-bolt mb-2">SWAP & ROAR</h3>
+            <p class="text-slate-200/80 leading-relaxed text-[15px]">
+              Confirm the swap, welcome to the pack. Now go be unbearably loud about it on X.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- contract callout -->
+      <div class="mt-12 reveal tilt-flat">
+        <div class="panel p-6 md:p-8 flex flex-col md:flex-row items-center gap-5">
+          <div class="font-pow text-3xl text-bolt shrink-0">CONTRACT</div>
+          <code data-ca
+            class="flex-1 w-full text-center md:text-left text-sm md:text-base text-white bg-ink/60 border-[3px] border-ink px-4 py-3 break-all"></code>
+          <button data-copy
+            class="shrink-0 px-6 py-3 bg-bolt text-ink font-blk text-xs uppercase tracking-widest btn-comic">
+            <i class="bi bi-clipboard-check"></i> Copy
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="zigzag"></div>
+
+  <!-- ══════════════════ CHART ══════════════════ -->
+  <section id="chart" class="relative py-24 md:py-32 stage">
+    <div class="mx-auto max-w-7xl px-5">
+
+      <div class="text-center mb-14 reveal">
+        <h2 class="font-pow text-bolt outline-ink text-6xl md:text-8xl leading-none">THE CHARGE</h2>
+        <p class="font-blk uppercase tracking-[.35em] text-xs text-white/70 mt-4">Live price — DexScreener</p>
+      </div>
+
+      <div class="reveal tilt-flat">
+        <div class="panel p-2 md:p-3">
+          <div class="relative w-full" style="padding-top:min(78%,640px)">
+            <iframe data-embed src="" title="Catecoin ($CATE) live chart on DexScreener"
+              class="absolute inset-0 w-full h-full border-0 bg-ink" loading="lazy" allow="clipboard-write"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-wrap justify-center gap-4 reveal">
+        <a data-chart href="#" target="_blank" rel="noopener"
+          class="px-6 py-3.5 bg-white text-ink font-blk text-xs uppercase tracking-widest btn-comic inline-flex items-center gap-2">
+          <i class="bi bi-bar-chart-line-fill"></i> Open DexScreener
+        </a>
+        <a data-pool href="#" target="_blank" rel="noopener"
+          class="px-6 py-3.5 bg-[#FF007A] text-white font-blk text-xs uppercase tracking-widest btn-comic inline-flex items-center gap-2">
+          <i class="bi bi-droplet-fill"></i> Uniswap Pool
+        </a>
+        <a data-buy href="#" target="_blank" rel="noopener"
+          class="px-6 py-3.5 bg-bolt text-ink font-blk text-xs uppercase tracking-widest btn-comic inline-flex items-center gap-2">
+          <i class="bi bi-lightning-charge-fill"></i> Trade Now
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="zigzag"></div>
+
+  <!-- ══════════════════ JOIN US ══════════════════ -->
+  <section id="join" class="relative py-24 md:py-32 stage">
+    <div class="mx-auto max-w-7xl px-5">
+
+      <div class="text-center mb-14 reveal">
+        <h2 class="font-pow text-white outline-ink text-6xl md:text-8xl leading-none">JOIN THE <span
+            class="text-bolt">PACK</span></h2>
+        <p class="font-blk uppercase tracking-[.35em] text-xs text-white/70 mt-4">Follow Catecoin on X</p>
+      </div>
+
+      <!-- BANNER — only placed here -->
+      <div class="reveal tilt-flat">
+        <div class="panel p-2 md:p-3 relative overflow-hidden">
+          <img src="banner.png" alt="Catecoin banner" class="w-full h-auto" />
+          <div class="absolute inset-0 pointer-events-none halftone-fill opacity-20"></div>
+        </div>
+      </div>
+
+      <!-- socials -->
+      <div class="mt-10 max-w-xl mx-auto">
+        <a href="https://x.com/catecoin_robin" target="_blank" rel="noopener"
+          class="reveal tilt-l panel p-8 flex items-center gap-6 hover:bg-white/10 transition group">
+          <div
+            class="w-20 h-20 shrink-0 grid place-items-center bg-white text-ink border-[4px] border-ink group-hover:bg-bolt transition">
+            <i class="bi bi-twitter-x text-4xl"></i>
+          </div>
+          <div>
+            <div class="font-pow text-3xl text-bolt leading-none">FOLLOW ON X</div>
+            <div class="text-white/70 mt-1.5">@sushivladcat</div>
+          </div>
+          <i class="bi bi-arrow-up-right ml-auto text-2xl text-bolt"></i>
+        </a>
+      </div>
+
+      <!-- final CTA -->
+      <div class="mt-10 reveal">
+        <div class="panel p-9 md:p-12 text-center tilt-flat">
+          <div class="font-bang text-4xl md:text-6xl text-bolt tracking-wide flick">"CATECOIN IS $CATE!"
+          </div>
+          <p class="mt-4 text-white/80 text-lg max-w-2xl mx-auto">
+            Grab your bag, sharpen your claws, and ride with Catecoin — $CATE.
+          </p>
+          <div class="mt-8 flex flex-wrap justify-center gap-4">
+            <a data-buy href="#" target="_blank" rel="noopener"
+              class="px-8 py-4 bg-bolt text-ink font-pow text-2xl btn-comic inline-flex items-center gap-3">
+              <i class="bi bi-lightning-charge-fill"></i> BUY NOW
+            </a>
+            <a data-chart href="#" target="_blank" rel="noopener"
+              class="px-8 py-4 bg-white text-ink font-pow text-2xl btn-comic inline-flex items-center gap-3">
+              <i class="bi bi-graph-up-arrow"></i> VIEW CHART
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer class="relative border-t-4 border-bolt/60 bg-ink/70 backdrop-blur">
+    <div class="mx-auto max-w-7xl px-5 py-12 flex flex-col md:flex-row items-center gap-6 justify-between">
+      <div class="flex items-center gap-4">
+        <img src="logo.png" alt="" class="w-14 h-14 rounded-full border-[3px] border-bolt object-cover" />
+        <div>
+          <div class="font-pow text-2xl text-bolt leading-none">Catecoin</div>
+          <div class="font-blk text-[10px] uppercase tracking-widest text-white/50 mt-1">$CATE · Robinhood Chain
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <a href="https://x.com/catecoin_robin" target="_blank" rel="noopener" aria-label="X"
+          class="w-11 h-11 grid place-items-center bg-white text-ink btn-comic hover:bg-bolt"><i
+            class="bi bi-twitter-x"></i></a>
+        <a data-buy href="#" target="_blank" rel="noopener" aria-label="Uniswap"
+          class="w-11 h-11 grid place-items-center bg-white text-ink btn-comic hover:bg-bolt"><i
+            class="bi bi-arrow-left-right"></i></a>
+        <a data-chart href="#" target="_blank" rel="noopener" aria-label="DexScreener"
+          class="w-11 h-11 grid place-items-center bg-white text-ink btn-comic hover:bg-bolt"><i
+            class="bi bi-bar-chart-line-fill"></i></a>
+      </div>
+    </div>
+    <div class="border-t border-white/10 py-5 text-center text-xs text-white/45 px-5">
+      $CATE is a meme coin with no intrinsic value or expectation of financial return.
+      Nothing here is financial advice. DYOR. 🐱🍣
+    </div>
+  </footer>
+
+  <!-- toast -->
+  <div id="toast"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] px-6 py-3 bg-bolt text-ink font-blk text-xs uppercase tracking-widest border-[4px] border-ink opacity-0 pointer-events-none transition-opacity duration-300">
+    Contract copied ⚡
+  </div>
+
+  <script>
+    /* ── wire up every link/field from THUNDER config ───────────── */
+    document.querySelectorAll('[data-buy]').forEach(el => el.href = THUNDER.BUY);
+    document.querySelectorAll('[data-chart]').forEach(el => el.href = THUNDER.CHART);
+    document.querySelectorAll('[data-pool]').forEach(el => el.href = THUNDER.POOL);
+    document.querySelectorAll('[data-ca]').forEach(el => el.textContent = THUNDER.CA);
+    document.querySelectorAll('[data-embed]').forEach(el => el.src = THUNDER.EMBED);
+
+    /* ── copy contract ──────────────────────────────────────────── */
+    const toast = document.getElementById('toast');
+    let toastTimer;
+    document.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(THUNDER.CA); }
+        catch {
+          const ta = document.createElement('textarea');
+          ta.value = THUNDER.CA; document.body.appendChild(ta);
+          ta.select(); document.execCommand('copy'); ta.remove();
+        }
+        toast.style.opacity = '1';
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.style.opacity = '0', 1800);
+      });
+    });
+
+    /* ── scroll reveal ──────────────────────────────────────────── */
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    /* ── subtle parallax on the fixed background ────────────────── */
+    const art = document.querySelector('.bg-fixed-art');
+    let ticking = false;
+    addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        art.style.transform = `scale(1.08) translateY(${scrollY * -0.035}px)`;
+        ticking = false;
+      });
+    }, { passive: true });
+  </script>
+</body>
+
+</html>
